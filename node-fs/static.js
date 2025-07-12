@@ -3,58 +3,34 @@
 // importar el modulo fs
 import http from "node:http";
 import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const PORT = 3000;
 
 // crear una funcion requestListener
 function requestListener(req, res) {
-  if (req.url === "/") {
-    res.end("Hola");
-  } else if (req.url === "/hello.txt") {
-    // encontrar el archivo
-    const filePath =
-      "/home/david-codeable/fundamentals-mayo-25/teaching-notes/node-fs/public/hello.txt";
 
-    // leer el archivo
-    fs.readFile(filePath, "utf-8", (error, content) => {
-      if (error) {
-        console.log(error);
-        return;
-      }
-
-      res.end(content);
-    });
-  } else if (req.url === '/index.html') {
-    // encontrar el archivo
-    const filePath = '/home/david-codeable/fundamentals-mayo-25/teaching-notes/node-fs/public/index.html'
-
-    // leer el archivo
-    fs.readFile(filePath, "utf-8", (error, content) => {
-      if (error) {
-        console.log(error);
-        return;
-      }
-
-      res.end(content);
-    });
-  } else if (req.url === '/charmander.png') {
-    // encontrar el archivo
-    const filePath = '/home/david-codeable/fundamentals-mayo-25/teaching-notes/node-fs/public/charmander.png'
-
-    // leer el archivo
-    fs.readFile(filePath, null, (error, content) => {
-      if (error) {
-        console.log(error);
-        return;
-      }
-
-      res.end(content);
-    });
-
-  } else {
-    console.log("recibi una peticion a otra URL diferente de '/'");
+  if (!req.url) {
     res.end("URL no permitida");
   }
+
+  // variables globales
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const filePath = path.join(__dirname, "public", req.url);
+  console.log(filePath);
+
+  // leer el archivo
+  fs.readFile(filePath, "utf-8", (error, content) => {
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    // res.writeHead(200, { "Content-Type": "text/plain" });
+    res.end(content);
+  });
 }
 
 // crear el servidor web

@@ -11,12 +11,12 @@ const notes = [
 
 const requestListener = (req, res) => {
     if (req.url === '/') {
-        res.end('hola codeable')
+        res.end('Bienvenido a Notas')
     } else if (req.url === '/notes') {
-        res.end('notes')
+        res.end(JSON.stringify(notes))
     } else if ((req.url).includes('notes')) {
-        console.log(JSON.stringify(req.url))
         const reqArray = (req.url).split('/')
+        console.log(reqArray)
         const id = reqArray[2]
         res.end(JSON.stringify(notes.find(note => note.id === parseInt(id))))
     } else {
@@ -26,4 +26,4 @@ const requestListener = (req, res) => {
 
 const server = http.createServer(requestListener)
 
-server.listen(3000)
+server.listen(5500)

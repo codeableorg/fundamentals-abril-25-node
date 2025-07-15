@@ -1,10 +1,13 @@
 // TODO : modificar el servidor para que envie el archivo charmander.png cuando reciba la peticion a la URL '/charmander.png'
 
 // importar el modulo fs
-import http from "node:http";
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+const http = require("http")
+// import http from "node:http";
+const fs = require("fs")
+// import fs from "node:fs";
+const path = require("path")
+// import path from "node:path";
+// import { fileURLToPath } from "node:url";
 
 const PORT = 3000;
 
@@ -15,11 +18,40 @@ function requestListener(req, res) {
     res.end("URL no permitida");
   }
 
-  // variables globales
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-  const filePath = path.join(__dirname, "public", req.url);
+  // variables globales de CommonJS
+  // const __filename = fileURLToPath(import.meta.url); 
+  // const __dirname = path.dirname(__filename);
+  console.log(__dirname)
+  const filePath = path.join(__dirname, "public", req.url); // nos brinda la ruta completa del archivo que vamos a leer
   console.log(filePath);
+
+  const ext = path.extname(filePath);
+  let contentType = "text/html";
+ 
+  switch (ext) {
+    case ".txt" : {
+      contentType = "text/plain";
+      break;
+    }
+    case ".css": {
+      contentType = "text/css";
+      break;
+    }
+    case ".js": {
+      contentType = "text/javascript";
+      break;
+    }
+    case ".jpg":
+    case ".jpeg": {
+      contentType = "image/jpeg";
+      break;
+    }
+    case ".png": {
+      contentType = "image/png"
+    }
+
+  }
+
 
   // leer el archivo
   fs.readFile(filePath, "utf-8", (error, content) => {
@@ -28,7 +60,7 @@ function requestListener(req, res) {
       return;
     }
 
-    // res.writeHead(200, { "Content-Type": "text/plain" });
+    res.writeHead(200, { "Content-Type": contentType });
     res.end(content);
   });
 }
